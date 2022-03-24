@@ -1,0 +1,8 @@
+venv/
+env/
+__pycashe__/
+db.sqlite3
+*.pyc
+*.pot
+*.lot
+.idea/
