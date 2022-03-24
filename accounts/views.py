@@ -42,7 +42,7 @@ def register(request):
         user_form = UserRegisterFrom(request.Post)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['passwprd'])
+            new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
             return render(request, 'register_done.html', {'new_user':new_user})
     
