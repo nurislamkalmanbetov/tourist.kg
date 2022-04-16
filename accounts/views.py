@@ -1,11 +1,11 @@
 from distutils.log import Log
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 # Create your views here.
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from accounts.forms import LoginForm, UserRegisterFrom
-from .forms import UserRegisterFrom
+from accounts.forms import LoginForm, UserRegisterForm
+
 
 
 def sign_in(request):
@@ -22,7 +22,7 @@ def sign_in(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponse("Вы успешно вошли!")
+                    return redirect("index")
                 else:
                     return HttpResponse("Аккаунт неактивирован")
             else:
@@ -35,19 +35,20 @@ def sign_in(request):
 
 def logout_user(request):
     logout(request)
-    return HttpResponse("Вы успешно вышли!")
+    return redirect("Вы успешно вышли!")
 
 def register(request):
-    if request.method == 'Post':
-        user_form = UserRegisterFrom(request.Post)
+    if request.method == 'POST':
+        user_form = UserRegisterForm(request.Post)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
+            login(request, new_user) #логинится после регистрации
             return render(request, 'register_done.html', {'new_user':new_user})
     
-    
+
     else:
-        user_form = UserRegisterFrom()
+        user_form = UserRegisterForm()
         
     return render(request, 'register.html', {'user_form': user_form})
